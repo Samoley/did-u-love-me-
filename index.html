@@ -5,16 +5,17 @@
   <title>Do You Love Me?</title>
   <style>
     body {
-      background-color: pink;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       text-align: center;
       margin: 0;
       height: 100vh;
       overflow: hidden;
+      background-color: pink;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       transition: background-image 0.8s ease;
+      position: relative;
     }
 
     #question {
@@ -86,6 +87,20 @@
         transform: scale(1);
       }
     }
+
+    /* صورة الخنزير في المنتصف */
+    #pigImage {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      height: 300px;
+      display: none; /* مخفية افتراضياً */
+      z-index: 10;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    }
   </style>
 </head>
 <body>
@@ -100,6 +115,9 @@
   <div id="message"></div>
   <div class="confirm-buttons" id="confirmButtons" style="display: none;"></div>
 
+  <!-- صورة الخنزير -->
+  <img id="pigImage" src="https://i.imgur.com/IgQvFik.png" alt="Laughing Pig" />
+
   <script>
     const question = document.getElementById('question');
     const buttonsDiv = document.getElementById('buttonsDiv');
@@ -108,6 +126,7 @@
     const yesButton = document.getElementById('yes');
     const noButton = document.getElementById('no');
     const body = document.body;
+    const pigImage = document.getElementById('pigImage');
 
     // حركة زر No الأول
     noButton.addEventListener('mouseover', () => {
@@ -175,8 +194,8 @@
         message.textContent = "u r gay";
         confirmButtons.style.display = 'none';
 
-        // تغيير خلفية الصفحة إلى خنزير يضحك
-        body.style.backgroundImage = "url('https://i.imgur.com/IgQvFik.png')";
+        // إظهار صورة الخنزير في المنتصف
+        pigImage.style.display = 'block';
       });
     });
   </script>
