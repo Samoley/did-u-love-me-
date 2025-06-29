@@ -16,6 +16,7 @@
       margin-top: 100px;
       font-size: 36px;
       color: #fff;
+      transition: opacity 0.5s;
     }
     .buttons {
       margin-top: 50px;
@@ -52,7 +53,7 @@
 </head>
 <body>
 
-  <h1>Do you love me?</h1>
+  <h1 id="main-question">Do you love me?</h1>
 
   <div class="buttons" id="buttonsDiv">
     <button id="yes">Yes</button>
@@ -62,19 +63,14 @@
   <div id="message"></div>
 
   <script>
+    const question = document.getElementById('main-question');
     const buttonsDiv = document.getElementById('buttonsDiv');
     const message = document.getElementById('message');
+    const yesButton = document.getElementById('yes');
+    const noButton = document.getElementById('no');
 
-    // الأصليين
-    let yesButton = document.getElementById('yes');
-    let noButton = document.getElementById('no');
-
-    // لإنشاء أزرار التأكيد لاحقًا
-    let confirmYesButton = null;
-    let confirmNoButton = null;
-
-    // تحريك زر No كما في السابق
-    function moveNoButton() {
+    // حركة زر No الأول
+    noButton.addEventListener('mouseover', () => {
       noButton.style.opacity = 0;
       noButton.disabled = true;
       setTimeout(() => {
@@ -87,71 +83,55 @@
         noButton.style.opacity = 1;
         noButton.disabled = false;
       }, 500);
-    }
-
-    noButton.addEventListener('mouseover', moveNoButton);
+    });
 
     yesButton.addEventListener('click', () => {
+      // إخفاء السؤال الأصلي
+      question.style.display = 'none';
+
       // إخفاء الأزرار الأصلية
       yesButton.style.display = 'none';
       noButton.style.display = 'none';
 
-      // عرض السؤال: r u sure؟
+      // عرض سؤال التأكيد
       message.textContent = "r u sure?";
 
       // إنشاء أزرار التأكيد
-      confirmYesButton = document.createElement('button');
-      confirmYesButton.textContent = 'Yes';
-      confirmYesButton.id = 'confirmYes';
-      confirmYesButton.style.position = 'absolute';
-      confirmYesButton.style.padding = '10px 25px';
-      confirmYesButton.style.fontSize = '18px';
-      confirmYesButton.style.border = 'none';
-      confirmYesButton.style.borderRadius = '8px';
-      confirmYesButton.style.backgroundColor = 'green';
-      confirmYesButton.style.color = 'white';
-      confirmYesButton.style.left = '40%';
-      confirmYesButton.style.top = '0px';
-      confirmYesButton.style.cursor = 'pointer';
+      const confirmYes = document.createElement('button');
+      confirmYes.textContent = 'Yes';
+      confirmYes.id = 'confirmYes';
+      confirmYes.style.left = '40%';
+      confirmYes.style.top = '0px';
+      buttonsDiv.appendChild(confirmYes);
 
-      confirmNoButton = document.createElement('button');
-      confirmNoButton.textContent = 'No 😭';
-      confirmNoButton.id = 'confirmNo';
-      confirmNoButton.style.position = 'absolute';
-      confirmNoButton.style.padding = '10px 25px';
-      confirmNoButton.style.fontSize = '18px';
-      confirmNoButton.style.border = 'none';
-      confirmNoButton.style.borderRadius = '8px';
-      confirmNoButton.style.backgroundColor = 'red';
-      confirmNoButton.style.color = 'white';
-      confirmNoButton.style.left = '50%';
-      confirmNoButton.style.top = '0px';
-      confirmNoButton.style.cursor = 'pointer';
+      const confirmNo = document.createElement('button');
+      confirmNo.textContent = 'No 😭';
+      confirmNo.id = 'confirmNo';
+      confirmNo.style.left = '50%';
+      confirmNo.style.top = '0px';
+      buttonsDiv.appendChild(confirmNo);
 
-      buttonsDiv.appendChild(confirmYesButton);
-      buttonsDiv.appendChild(confirmNoButton);
-
-      // حركة زر No داخل تأكيد
-      confirmNoButton.addEventListener('mouseover', () => {
-        confirmNoButton.style.opacity = 0;
-        confirmNoButton.disabled = true;
+      // حركة زر No في التأكيد
+      confirmNo.addEventListener('mouseover', () => {
+        confirmNo.style.opacity = 0;
+        confirmNo.disabled = true;
         setTimeout(() => {
           const maxX = window.innerWidth - 100;
           const maxY = window.innerHeight - 100;
           const x = Math.random() * (maxX - 50) + 50;
           const y = Math.random() * (maxY - 300) + 100;
-          confirmNoButton.style.left = `${x}px`;
-          confirmNoButton.style.top = `${y}px`;
-          confirmNoButton.style.opacity = 1;
-          confirmNoButton.disabled = false;
+          confirmNo.style.left = `${x}px`;
+          confirmNo.style.top = `${y}px`;
+          confirmNo.style.opacity = 1;
+          confirmNo.disabled = false;
         }, 500);
       });
 
-      // عند الضغط على نعم التأكيد
-      confirmYesButton.addEventListener('click', () => {
+      // عند الضغط على Yes في التأكيد
+      confirmYes.addEventListener('click', () => {
         message.textContent = "u r gay";
-        confirmYesButton.style.display = 'none';
-        confirmNoButton.style.display = 'none';
+        confirmYes.style.display = 'none';
+        confirmNo.style.display = 'none';
       });
     });
   </script>
