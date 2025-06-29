@@ -49,18 +49,23 @@
     }
 
     #message {
-      font-size: 28px;
+      font-size: 36px;
       color: white;
-      margin-top: 50px;
+      margin-top: 40px;
       height: 60px;
+      animation: fadeInScale 1s ease forwards;
+      opacity: 0;
     }
 
-    .fancy-message {
-      animation: fadeInScale 1s ease forwards;
-      font-size: 42px;
-      color: white;
-      font-weight: bold;
-      opacity: 0;
+    .confirm-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .confirm-buttons button {
+      position: static;
     }
 
     @keyframes fadeInScale {
@@ -72,17 +77,6 @@
         opacity: 1;
         transform: scale(1);
       }
-    }
-
-    .confirm-buttons {
-      margin-top: 30px;
-      position: relative;
-      height: 60px;
-    }
-
-    .confirm-buttons button {
-      position: static;
-      margin: 0 20px;
     }
   </style>
 </head>
@@ -96,11 +90,13 @@
   </div>
 
   <div id="message"></div>
+  <div class="confirm-buttons" id="confirmButtons" style="display: none;"></div>
 
   <script>
     const question = document.getElementById('question');
     const buttonsDiv = document.getElementById('buttonsDiv');
     const message = document.getElementById('message');
+    const confirmButtons = document.getElementById('confirmButtons');
     const yesButton = document.getElementById('yes');
     const noButton = document.getElementById('no');
 
@@ -126,31 +122,27 @@
       yesButton.style.display = 'none';
       noButton.style.display = 'none';
 
-      // إنشاء السؤال الجديد بتأثير جميل
-      const fancyMsg = document.createElement('div');
-      fancyMsg.textContent = "r u sure?";
-      fancyMsg.className = "fancy-message";
-      message.appendChild(fancyMsg);
+      // إظهار سؤال التأكيد
+      message.textContent = "r u sure?";
+      message.style.opacity = 1;
 
-      // إنشاء الأزرار تحتها بشكل مرتب
-      const confirmDiv = document.createElement('div');
-      confirmDiv.className = 'confirm-buttons';
-
+      // إنشاء زر Yes
       const confirmYes = document.createElement('button');
       confirmYes.textContent = 'Yes';
       confirmYes.id = 'confirmYes';
       confirmYes.style.backgroundColor = 'green';
       confirmYes.style.color = 'white';
 
+      // إنشاء زر No
       const confirmNo = document.createElement('button');
       confirmNo.textContent = 'No 😭';
       confirmNo.id = 'confirmNo';
       confirmNo.style.backgroundColor = 'red';
       confirmNo.style.color = 'white';
 
-      confirmDiv.appendChild(confirmYes);
-      confirmDiv.appendChild(confirmNo);
-      message.appendChild(confirmDiv);
+      confirmButtons.appendChild(confirmYes);
+      confirmButtons.appendChild(confirmNo);
+      confirmButtons.style.display = 'flex';
 
       // حركة زر No الجديد
       confirmNo.addEventListener('mouseover', () => {
@@ -169,9 +161,10 @@
         }, 500);
       });
 
-      // عند الضغط على Yes النهائي
+      // عند الضغط على زر Yes الأخير
       confirmYes.addEventListener('click', () => {
-        message.innerHTML = `<div class="fancy-message">u r gay</div>`;
+        message.textContent = "u r gay";
+        confirmButtons.style.display = 'none';
       });
     });
   </script>
