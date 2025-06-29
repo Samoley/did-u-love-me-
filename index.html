@@ -10,14 +10,41 @@
       margin: 0;
       height: 100vh;
       overflow: hidden;
-      background-color: pink;
+      background: linear-gradient(270deg, pink, lightblue, violet, lightgreen);
+      background-size: 600% 600%;
+      animation: disco 10s ease infinite;
       position: relative;
     }
 
+    @keyframes disco {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    body.shake {
+      animation: shake 0.3s;
+    }
+
+    @keyframes shake {
+      0% { transform: translate(5px, 5px);}
+      25% { transform: translate(-5px, -5px);}
+      50% { transform: translate(5px, -5px);}
+      75% { transform: translate(-5px, 5px);}
+      100% { transform: translate(0, 0);}
+    }
+
     #question {
-      margin-top: 100px;
-      font-size: 36px;
+      margin-top: 80px;
+      font-size: 40px;
       color: white;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {transform: scale(1);}
+      50% {transform: scale(1.05);}
+      100% {transform: scale(1);}
     }
 
     .buttons {
@@ -28,13 +55,18 @@
 
     button {
       padding: 10px 25px;
-      font-size: 18px;
+      font-size: 20px;
       margin: 20px;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
       position: absolute;
-      transition: opacity 0.3s;
+      transition: opacity 0.3s, transform 0.3s;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    #yes:hover, #confirmYes:hover {
+      transform: scale(1.2) rotate(2deg);
     }
 
     #yes, #confirmYes {
@@ -74,28 +106,78 @@
     }
 
     @keyframes fadeInScale {
-      0% {
-        opacity: 0;
-        transform: scale(0.8);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1);
-      }
+      0% {opacity: 0; transform: scale(0.8);}
+      100% {opacity: 1; transform: scale(1);}
     }
 
-    /* صورة الخنزير في المنتصف */
-    #pigImage {
+    #dogImage {
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
-      width: 300px;
-      height: 300px;
+      transform: translate(-50%, -50%) scale(0.5);
+      width: 350px;
+      height: 350px;
       display: none;
       z-index: 10;
       border-radius: 15px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      box-shadow: 0 0 20px rgba(255,255,255,0.9);
+      animation: popIn 0.8s ease forwards;
+    }
+
+    @keyframes popIn {
+      0% {transform: translate(-50%, -50%) scale(0.5); opacity: 0;}
+      100% {transform: translate(-50%, -50%) scale(1); opacity: 1;}
+    }
+
+    #flash {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    #floatingText, .heart {
+      position: absolute;
+      color: yellow;
+      font-size: 24px;
+      font-weight: bold;
+      opacity: 0;
+      z-index: 1000;
+    }
+
+    .heart {
+      color: red;
+      font-size: 30px;
+      animation: heartFloat 2s ease forwards;
+    }
+
+    @keyframes heartFloat {
+      0% {transform: translate(-50%, -50%) scale(1); opacity: 1;}
+      100% {transform: translate(-50%, -200%) scale(1.5); opacity: 0;}
+    }
+
+    @keyframes floatText {
+      0% {transform: translate(-50%, -50%) scale(1); opacity: 1;}
+      100% {transform: translate(-50%, -150%) scale(1.5); opacity: 0;}
+    }
+
+    #resetBtn {
+      display: none;
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 25px;
+      background-color: #444;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      z-index: 100;
     }
   </style>
 </head>
@@ -111,8 +193,15 @@
   <div id="message"></div>
   <div class="confirm-buttons" id="confirmButtons" style="display: none;"></div>
 
-  <!-- صورة الخنزير -->
-  <img id="pigImage" src="https://images.unsplash.com/photo-1504215680853-026ed2a45def?auto=format&fit=crop&w=300&q=80" alt="Laughing Pig" />
+  <img id="dogImage" src="https://i.imgur.com/U4iGx1j.jpg" alt="Suspicious Dog" />
+  <div id="flash"></div>
+  <button id="resetBtn">Reset</button>
+
+  <!-- أصوات -->
+  <audio id="moveSound" src="https://www.myinstants.com/media/sounds/pop-up-off.mp3"></audio>
+  <audio id="laughSound" src="https://www.myinstants.com/media/sounds/troll-song.mp3"></audio>
+  <audio id="bgMusic" src="https://www.bensound.com/bensound-music/bensound-funnysong.mp3" loop></audio>
+  <audio id="boomSound" src="https://www.myinstants.com/media/sounds/boom.mp3"></audio>
 
   <script>
     const question = document.getElementById('question');
@@ -121,70 +210,116 @@
     const confirmButtons = document.getElementById('confirmButtons');
     const yesButton = document.getElementById('yes');
     const noButton = document.getElementById('no');
-    const body = document.body;
-    const pigImage = document.getElementById('pigImage');
+    const dogImage = document.getElementById('dogImage');
+    const flash = document.getElementById('flash');
+    const resetBtn = document.getElementById('resetBtn');
 
-    noButton.addEventListener('mouseover', () => {
-      noButton.style.opacity = 0;
-      noButton.disabled = true;
+    const moveSound = document.getElementById('moveSound');
+    const laughSound = document.getElementById('laughSound');
+    const bgMusic = document.getElementById('bgMusic');
+    const boomSound = document.getElementById('boomSound');
+
+    const funnyTexts = [
+      "You can't say no 😈", "Stop trying! 😏",
+      "Catch me if you can! 🏃‍♂️💨", "Nope nope nope!",
+      "Nice try! 😂", "Seriously? 😂", "Not gonna happen!"
+    ];
+
+    function showFloatingText(text) {
+      const floating = document.createElement('div');
+      floating.className = 'floatingText';
+      floating.style.left = (Math.random() * 80 + 10) + '%';
+      floating.style.top = (Math.random() * 60 + 20) + '%';
+      floating.style.animation = 'floatText 1s ease forwards';
+      floating.textContent = text;
+      document.body.appendChild(floating);
+      setTimeout(() => floating.remove(), 1000);
+    }
+
+    function spawnHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.innerHTML = '❤️';
+      heart.style.left = (Math.random() * 80 + 10) + '%';
+      heart.style.top = (Math.random() * 60 + 20) + '%';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 2000);
+    }
+
+    function screenShake() {
+      document.body.classList.add('shake');
+      setTimeout(() => document.body.classList.remove('shake'), 300);
+    }
+
+    function flashScreen() {
+      flash.style.opacity = 1;
+      setTimeout(() => flash.style.opacity = 0, 100);
+    }
+
+    function moveButton(button) {
+      moveSound.play();
+      screenShake();
+      const randomText = funnyTexts[Math.floor(Math.random() * funnyTexts.length)];
+      showFloatingText(randomText);
+
+      button.style.opacity = 0;
+      button.disabled = true;
       setTimeout(() => {
-        const maxX = window.innerWidth - 100;
-        const maxY = window.innerHeight - 100;
-        const x = Math.random() * (maxX - 50) + 50;
-        const y = Math.random() * (maxY - 300) + 100;
-        noButton.style.left = `${x}px`;
-        noButton.style.top = `${y}px`;
-        noButton.style.opacity = 1;
-        noButton.disabled = false;
-      }, 500);
-    });
+        const maxX = window.innerWidth - 150;
+        const maxY = window.innerHeight - 150;
+        const x = Math.random() * maxX;
+        const y = Math.random() * maxY;
+        button.style.left = `${x}px`;
+        button.style.top = `${y}px`;
+        button.style.opacity = 1;
+        button.disabled = false;
+      }, 200);
+    }
+
+    noButton.addEventListener('mouseover', () => moveButton(noButton));
 
     yesButton.addEventListener('click', () => {
+      flashScreen();
+      boomSound.play();
+      spawnHeart();
+      bgMusic.play();
       question.style.display = 'none';
       yesButton.style.display = 'none';
       noButton.style.display = 'none';
 
-      message.textContent = "r u sure?";
+      message.textContent = "Are you absolutely sure?";
       message.style.opacity = 1;
 
       const confirmYes = document.createElement('button');
       confirmYes.textContent = 'Yes';
       confirmYes.id = 'confirmYes';
-      confirmYes.style.backgroundColor = 'green';
-      confirmYes.style.color = 'white';
 
       const confirmNo = document.createElement('button');
       confirmNo.textContent = 'No 😭';
       confirmNo.id = 'confirmNo';
-      confirmNo.style.backgroundColor = 'red';
-      confirmNo.style.color = 'white';
 
       confirmButtons.appendChild(confirmYes);
       confirmButtons.appendChild(confirmNo);
       confirmButtons.style.display = 'flex';
 
-      confirmNo.addEventListener('mouseover', () => {
-        confirmNo.style.opacity = 0;
-        confirmNo.disabled = true;
-        setTimeout(() => {
-          const maxX = window.innerWidth - 100;
-          const maxY = window.innerHeight - 100;
-          const x = Math.random() * (maxX - 50) + 50;
-          const y = Math.random() * (maxY - 300) + 100;
-          confirmNo.style.position = 'absolute';
-          confirmNo.style.left = `${x}px`;
-          confirmNo.style.top = `${y}px`;
-          confirmNo.style.opacity = 1;
-          confirmNo.disabled = false;
-        }, 500);
-      });
+      confirmNo.addEventListener('mouseover', () => moveButton(confirmNo));
 
       confirmYes.addEventListener('click', () => {
-        message.textContent = "u r gay";
-        confirmButtons.style.display = 'none';
+        flashScreen();
+        screenShake();
+        boomSound.play();
+        laughSound.play();
+        for (let i = 0; i < 10; i++) spawnHeart();
 
-        pigImage.style.display = 'block';
+        message.textContent = "You are suspicious!";
+        confirmButtons.style.display = 'none';
+        dogImage.style.display = 'block';
+        resetBtn.style.display = 'block';
       });
+    });
+
+    resetBtn.addEventListener('click', () => {
+      location.reload();
     });
   </script>
 
