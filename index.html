@@ -11,6 +11,10 @@
       margin: 0;
       height: 100vh;
       overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      transition: background-image 0.8s ease;
     }
 
     #question {
@@ -55,6 +59,8 @@
       height: 60px;
       animation: fadeInScale 1s ease forwards;
       opacity: 0;
+      z-index: 2;
+      position: relative;
     }
 
     .confirm-buttons {
@@ -62,6 +68,8 @@
       display: flex;
       justify-content: center;
       gap: 30px;
+      z-index: 2;
+      position: relative;
     }
 
     .confirm-buttons button {
@@ -99,6 +107,7 @@
     const confirmButtons = document.getElementById('confirmButtons');
     const yesButton = document.getElementById('yes');
     const noButton = document.getElementById('no');
+    const body = document.body;
 
     // حركة زر No الأول
     noButton.addEventListener('mouseover', () => {
@@ -161,10 +170,13 @@
         }, 500);
       });
 
-      // عند الضغط على زر Yes الأخير
+      // عند الضغط على زر Yes النهائي
       confirmYes.addEventListener('click', () => {
         message.textContent = "u r gay";
         confirmButtons.style.display = 'none';
+
+        // تغيير خلفية الصفحة إلى خنزير يضحك
+        body.style.backgroundImage = "url('https://i.imgur.com/IgQvFik.png')";
       });
     });
   </script>
