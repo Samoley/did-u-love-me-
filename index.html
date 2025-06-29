@@ -12,10 +12,10 @@
       height: 100vh;
       overflow: hidden;
     }
-    h1 {
+    #question {
       margin-top: 100px;
       font-size: 36px;
-      color: #fff;
+      color: white;
       transition: opacity 0.5s;
     }
     .buttons {
@@ -53,7 +53,7 @@
 </head>
 <body>
 
-  <h1 id="main-question">Do you love me?</h1>
+  <h1 id="question">Do you love me?</h1>
 
   <div class="buttons" id="buttonsDiv">
     <button id="yes">Yes</button>
@@ -63,7 +63,7 @@
   <div id="message"></div>
 
   <script>
-    const question = document.getElementById('main-question');
+    const question = document.getElementById('question');
     const buttonsDiv = document.getElementById('buttonsDiv');
     const message = document.getElementById('message');
     const yesButton = document.getElementById('yes');
@@ -77,64 +77,3 @@
         const maxX = window.innerWidth - 100;
         const maxY = window.innerHeight - 100;
         const x = Math.random() * (maxX - 50) + 50;
-        const y = Math.random() * (maxY - 300) + 100;
-        noButton.style.left = `${x}px`;
-        noButton.style.top = `${y}px`;
-        noButton.style.opacity = 1;
-        noButton.disabled = false;
-      }, 500);
-    });
-
-    yesButton.addEventListener('click', () => {
-      // إخفاء السؤال الأصلي
-      question.style.display = 'none';
-
-      // إخفاء الأزرار الأصلية
-      yesButton.style.display = 'none';
-      noButton.style.display = 'none';
-
-      // عرض سؤال التأكيد
-      message.textContent = "r u sure?";
-
-      // إنشاء أزرار التأكيد
-      const confirmYes = document.createElement('button');
-      confirmYes.textContent = 'Yes';
-      confirmYes.id = 'confirmYes';
-      confirmYes.style.left = '40%';
-      confirmYes.style.top = '0px';
-      buttonsDiv.appendChild(confirmYes);
-
-      const confirmNo = document.createElement('button');
-      confirmNo.textContent = 'No 😭';
-      confirmNo.id = 'confirmNo';
-      confirmNo.style.left = '50%';
-      confirmNo.style.top = '0px';
-      buttonsDiv.appendChild(confirmNo);
-
-      // حركة زر No في التأكيد
-      confirmNo.addEventListener('mouseover', () => {
-        confirmNo.style.opacity = 0;
-        confirmNo.disabled = true;
-        setTimeout(() => {
-          const maxX = window.innerWidth - 100;
-          const maxY = window.innerHeight - 100;
-          const x = Math.random() * (maxX - 50) + 50;
-          const y = Math.random() * (maxY - 300) + 100;
-          confirmNo.style.left = `${x}px`;
-          confirmNo.style.top = `${y}px`;
-          confirmNo.style.opacity = 1;
-          confirmNo.disabled = false;
-        }, 500);
-      });
-
-      // عند الضغط على Yes في التأكيد
-      confirmYes.addEventListener('click', () => {
-        message.textContent = "u r gay";
-        confirmYes.style.display = 'none';
-        confirmNo.style.display = 'none';
-      });
-    });
-  </script>
-
-</body>
-</html>
