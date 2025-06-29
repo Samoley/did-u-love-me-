@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Do You Love Me?</title>
   <style>
     body {
@@ -20,6 +20,7 @@
     .buttons {
       margin-top: 50px;
       position: relative;
+      height: 60px;
     }
     button {
       padding: 10px 25px;
@@ -31,12 +32,12 @@
       position: absolute;
       transition: opacity 0.3s;
     }
-    #yes {
+    #yes, #confirmYes {
       background-color: green;
       color: white;
       left: 40%;
     }
-    #no {
+    #no, #confirmNo {
       background-color: red;
       color: white;
       left: 50%;
@@ -45,6 +46,7 @@
       font-size: 28px;
       color: white;
       margin-top: 50px;
+      height: 40px;
     }
   </style>
 </head>
@@ -52,38 +54,105 @@
 
   <h1>Do you love me?</h1>
 
-  <div class="buttons">
+  <div class="buttons" id="buttonsDiv">
     <button id="yes">Yes</button>
-    <button id="no">No</button>
+    <button id="no">No 😭</button>
   </div>
 
   <div id="message"></div>
 
   <script>
-    const noButton = document.getElementById('no');
-    const yesButton = document.getElementById('yes');
+    const buttonsDiv = document.getElementById('buttonsDiv');
     const message = document.getElementById('message');
 
-    noButton.addEventListener('mouseover', () => {
-      // إخفاء الزر
+    // الأصليين
+    let yesButton = document.getElementById('yes');
+    let noButton = document.getElementById('no');
+
+    // لإنشاء أزرار التأكيد لاحقًا
+    let confirmYesButton = null;
+    let confirmNoButton = null;
+
+    // تحريك زر No كما في السابق
+    function moveNoButton() {
       noButton.style.opacity = 0;
       noButton.disabled = true;
-
       setTimeout(() => {
-        const x = Math.random() * (window.innerWidth - 100);
-        const y = Math.random() * (window.innerHeight - 100);
+        const maxX = window.innerWidth - 100;
+        const maxY = window.innerHeight - 100;
+        const x = Math.random() * (maxX - 50) + 50;
+        const y = Math.random() * (maxY - 300) + 100;
         noButton.style.left = `${x}px`;
         noButton.style.top = `${y}px`;
-        // إظهار الزر من جديد
         noButton.style.opacity = 1;
         noButton.disabled = false;
-      }, 500); // نصف ثانية تأخير
-    });
+      }, 500);
+    }
+
+    noButton.addEventListener('mouseover', moveNoButton);
 
     yesButton.addEventListener('click', () => {
-      message.textContent = "I love you too ❤️";
-      yesButton.style.display = "none";
-      noButton.style.display = "none";
+      // إخفاء الأزرار الأصلية
+      yesButton.style.display = 'none';
+      noButton.style.display = 'none';
+
+      // عرض السؤال: r u sure؟
+      message.textContent = "r u sure?";
+
+      // إنشاء أزرار التأكيد
+      confirmYesButton = document.createElement('button');
+      confirmYesButton.textContent = 'Yes';
+      confirmYesButton.id = 'confirmYes';
+      confirmYesButton.style.position = 'absolute';
+      confirmYesButton.style.padding = '10px 25px';
+      confirmYesButton.style.fontSize = '18px';
+      confirmYesButton.style.border = 'none';
+      confirmYesButton.style.borderRadius = '8px';
+      confirmYesButton.style.backgroundColor = 'green';
+      confirmYesButton.style.color = 'white';
+      confirmYesButton.style.left = '40%';
+      confirmYesButton.style.top = '0px';
+      confirmYesButton.style.cursor = 'pointer';
+
+      confirmNoButton = document.createElement('button');
+      confirmNoButton.textContent = 'No 😭';
+      confirmNoButton.id = 'confirmNo';
+      confirmNoButton.style.position = 'absolute';
+      confirmNoButton.style.padding = '10px 25px';
+      confirmNoButton.style.fontSize = '18px';
+      confirmNoButton.style.border = 'none';
+      confirmNoButton.style.borderRadius = '8px';
+      confirmNoButton.style.backgroundColor = 'red';
+      confirmNoButton.style.color = 'white';
+      confirmNoButton.style.left = '50%';
+      confirmNoButton.style.top = '0px';
+      confirmNoButton.style.cursor = 'pointer';
+
+      buttonsDiv.appendChild(confirmYesButton);
+      buttonsDiv.appendChild(confirmNoButton);
+
+      // حركة زر No داخل تأكيد
+      confirmNoButton.addEventListener('mouseover', () => {
+        confirmNoButton.style.opacity = 0;
+        confirmNoButton.disabled = true;
+        setTimeout(() => {
+          const maxX = window.innerWidth - 100;
+          const maxY = window.innerHeight - 100;
+          const x = Math.random() * (maxX - 50) + 50;
+          const y = Math.random() * (maxY - 300) + 100;
+          confirmNoButton.style.left = `${x}px`;
+          confirmNoButton.style.top = `${y}px`;
+          confirmNoButton.style.opacity = 1;
+          confirmNoButton.disabled = false;
+        }, 500);
+      });
+
+      // عند الضغط على نعم التأكيد
+      confirmYesButton.addEventListener('click', () => {
+        message.textContent = "u r gay";
+        confirmYesButton.style.display = 'none';
+        confirmNoButton.style.display = 'none';
+      });
     });
   </script>
 
