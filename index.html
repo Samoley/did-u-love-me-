@@ -6,23 +6,25 @@
   <style>
     body {
       background-color: pink;
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       text-align: center;
       margin: 0;
       height: 100vh;
       overflow: hidden;
     }
+
     #question {
       margin-top: 100px;
       font-size: 36px;
       color: white;
-      transition: opacity 0.5s;
     }
+
     .buttons {
       margin-top: 50px;
       position: relative;
       height: 60px;
     }
+
     button {
       padding: 10px 25px;
       font-size: 18px;
@@ -33,21 +35,54 @@
       position: absolute;
       transition: opacity 0.3s;
     }
+
     #yes, #confirmYes {
       background-color: green;
       color: white;
       left: 40%;
     }
+
     #no, #confirmNo {
       background-color: red;
       color: white;
       left: 50%;
     }
+
     #message {
       font-size: 28px;
       color: white;
       margin-top: 50px;
-      height: 40px;
+      height: 60px;
+    }
+
+    .fancy-message {
+      animation: fadeInScale 1s ease forwards;
+      font-size: 42px;
+      color: white;
+      font-weight: bold;
+      opacity: 0;
+    }
+
+    @keyframes fadeInScale {
+      0% {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .confirm-buttons {
+      margin-top: 30px;
+      position: relative;
+      height: 60px;
+    }
+
+    .confirm-buttons button {
+      position: static;
+      margin: 0 20px;
     }
   </style>
 </head>
@@ -77,3 +112,69 @@
         const maxX = window.innerWidth - 100;
         const maxY = window.innerHeight - 100;
         const x = Math.random() * (maxX - 50) + 50;
+        const y = Math.random() * (maxY - 300) + 100;
+        noButton.style.left = `${x}px`;
+        noButton.style.top = `${y}px`;
+        noButton.style.opacity = 1;
+        noButton.disabled = false;
+      }, 500);
+    });
+
+    yesButton.addEventListener('click', () => {
+      // إخفاء الجملة الأصلية والأزرار
+      question.style.display = 'none';
+      yesButton.style.display = 'none';
+      noButton.style.display = 'none';
+
+      // إنشاء السؤال الجديد بتأثير جميل
+      const fancyMsg = document.createElement('div');
+      fancyMsg.textContent = "r u sure?";
+      fancyMsg.className = "fancy-message";
+      message.appendChild(fancyMsg);
+
+      // إنشاء الأزرار تحتها بشكل مرتب
+      const confirmDiv = document.createElement('div');
+      confirmDiv.className = 'confirm-buttons';
+
+      const confirmYes = document.createElement('button');
+      confirmYes.textContent = 'Yes';
+      confirmYes.id = 'confirmYes';
+      confirmYes.style.backgroundColor = 'green';
+      confirmYes.style.color = 'white';
+
+      const confirmNo = document.createElement('button');
+      confirmNo.textContent = 'No 😭';
+      confirmNo.id = 'confirmNo';
+      confirmNo.style.backgroundColor = 'red';
+      confirmNo.style.color = 'white';
+
+      confirmDiv.appendChild(confirmYes);
+      confirmDiv.appendChild(confirmNo);
+      message.appendChild(confirmDiv);
+
+      // حركة زر No الجديد
+      confirmNo.addEventListener('mouseover', () => {
+        confirmNo.style.opacity = 0;
+        confirmNo.disabled = true;
+        setTimeout(() => {
+          const maxX = window.innerWidth - 100;
+          const maxY = window.innerHeight - 100;
+          const x = Math.random() * (maxX - 50) + 50;
+          const y = Math.random() * (maxY - 300) + 100;
+          confirmNo.style.position = 'absolute';
+          confirmNo.style.left = `${x}px`;
+          confirmNo.style.top = `${y}px`;
+          confirmNo.style.opacity = 1;
+          confirmNo.disabled = false;
+        }, 500);
+      });
+
+      // عند الضغط على Yes النهائي
+      confirmYes.addEventListener('click', () => {
+        message.innerHTML = `<div class="fancy-message">u r gay</div>`;
+      });
+    });
+  </script>
+
+</body>
+</html>
