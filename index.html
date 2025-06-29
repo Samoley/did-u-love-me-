@@ -11,10 +11,6 @@
       height: 100vh;
       overflow: hidden;
       background-color: pink;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      transition: background-image 0.8s ease;
       position: relative;
     }
 
@@ -96,7 +92,7 @@
       transform: translate(-50%, -50%);
       width: 300px;
       height: 300px;
-      display: none; /* مخفية افتراضياً */
+      display: none;
       z-index: 10;
       border-radius: 15px;
       box-shadow: 0 0 15px rgba(0,0,0,0.5);
@@ -116,7 +112,7 @@
   <div class="confirm-buttons" id="confirmButtons" style="display: none;"></div>
 
   <!-- صورة الخنزير -->
-  <img id="pigImage" src="https://i.imgur.com/IgQvFik.png" alt="Laughing Pig" />
+  <img id="pigImage" src="https://images.unsplash.com/photo-1504215680853-026ed2a45def?auto=format&fit=crop&w=300&q=80" alt="Laughing Pig" />
 
   <script>
     const question = document.getElementById('question');
@@ -128,7 +124,6 @@
     const body = document.body;
     const pigImage = document.getElementById('pigImage');
 
-    // حركة زر No الأول
     noButton.addEventListener('mouseover', () => {
       noButton.style.opacity = 0;
       noButton.disabled = true;
@@ -145,23 +140,19 @@
     });
 
     yesButton.addEventListener('click', () => {
-      // إخفاء الجملة الأصلية والأزرار
       question.style.display = 'none';
       yesButton.style.display = 'none';
       noButton.style.display = 'none';
 
-      // إظهار سؤال التأكيد
       message.textContent = "r u sure?";
       message.style.opacity = 1;
 
-      // إنشاء زر Yes
       const confirmYes = document.createElement('button');
       confirmYes.textContent = 'Yes';
       confirmYes.id = 'confirmYes';
       confirmYes.style.backgroundColor = 'green';
       confirmYes.style.color = 'white';
 
-      // إنشاء زر No
       const confirmNo = document.createElement('button');
       confirmNo.textContent = 'No 😭';
       confirmNo.id = 'confirmNo';
@@ -172,7 +163,6 @@
       confirmButtons.appendChild(confirmNo);
       confirmButtons.style.display = 'flex';
 
-      // حركة زر No الجديد
       confirmNo.addEventListener('mouseover', () => {
         confirmNo.style.opacity = 0;
         confirmNo.disabled = true;
@@ -189,12 +179,10 @@
         }, 500);
       });
 
-      // عند الضغط على زر Yes النهائي
       confirmYes.addEventListener('click', () => {
         message.textContent = "u r gay";
         confirmButtons.style.display = 'none';
 
-        // إظهار صورة الخنزير في المنتصف
         pigImage.style.display = 'block';
       });
     });
